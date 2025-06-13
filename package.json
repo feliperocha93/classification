@@ -28,6 +28,7 @@
     "test": ""
   },
   "dependencies": {
+    "@google/genai": "^1.4.0",
     "@huggingface/transformers": "^3.5.1",
     "csv-writer": "^1.6.0",
     "tsne-js": "^1.0.3"

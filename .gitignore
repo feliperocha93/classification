@@ -2,3 +2,4 @@ node_modules
 train
 embeddings*
 tsne_output.csv
+.env
