@@ -1,3 +1,4 @@
 node_modules
 train
-embeddings
+embeddings*
+tsne_output.csv
