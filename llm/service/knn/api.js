@@ -1,13 +1,16 @@
 import fs from "fs";
 import knnClassifier from "./classifier.js";
+import { imgEmbedder } from "./embedder.js";
 
 let knowledgeBase = [];
 
-function init() {
+async function init() {
   const embeddings = JSON.parse(
     fs.readFileSync("./knn/embeddings.json", "utf8")
   );
   knowledgeBase = embeddings.filter((e) => e.split === "train");
+
+  await imgEmbedder.loadInstance();
 }
 
 async function classify(path, k = 5) {
