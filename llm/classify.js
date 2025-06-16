@@ -7,9 +7,14 @@ const genai = new GoogleGenAI({
 
 const embeddings = JSON.parse(fs.readFileSync("../embeddings.json", "utf8"));
 
-const testPaths = embeddings
+const testInstances = embeddings
   .filter((e) => e.split === "test")
-  .map((e) => ".." + e.path.slice(1));
+  .map((e) => {
+    return {
+      path: ".." + e.path.slice(1),
+      trueClass: e.class,
+    };
+  });
 
 function readImg(path) {
   return fs.readFileSync(path, { encoding: "base64" });
@@ -68,4 +73,35 @@ async function llmClassifier(path) {
   return await JSON.parse(response.text)[0]["class"];
 }
 
-console.log(await llmClassifier(testPaths[0]));
+function calculateAccuracy(predictedClasses) {
+  let correct = 0;
+
+  for (let predicted of predictedClasses) {
+    if (predicted.predictedClass === predicted.trueClass) {
+      correct++;
+    }
+  }
+
+  return (correct / predictedClasses.length) * 100;
+}
+
+let startIndex = 0;
+while (startIndex < testInstances.length) {
+  let endIndex = startIndex + 10;
+
+  console.log(`Processing images from ${startIndex} to ${endIndex}...`);
+
+  let request = testInstances
+    .slice(startIndex, endIndex)
+    .map((i) => llmClassifier(i["path"]));
+
+  await Promise.all(request);
+
+  for (let i = 0; i < testInstances.length; i++) {
+    testInstances[i].predictedClass = await request[i];
+  }
+
+  startIndex = endIndex;
+}
+
+console.log(calculateAccuracy(testInstances));
