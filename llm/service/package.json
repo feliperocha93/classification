@@ -24,11 +24,12 @@
   },
   "contributors": [],
   "scripts": {
-    "dev": "",
+    "dev": "node --env-file=.env classifier.js",
     "test": ""
   },
   "dependencies": {
     "@google/genai": "^1.4.0",
-    "@huggingface/transformers": "^3.5.2"
+    "@huggingface/transformers": "^3.5.2",
+    "express": "^5.1.0"
   }
 }

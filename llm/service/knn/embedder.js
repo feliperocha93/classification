@@ -15,6 +15,7 @@ export class imgEmbedder {
     if (this.pipeline === null) {
       this.pipeline = await pipeline(this.task, this.model, this.options);
     }
+    console.log("Image embedder loaded with model:", this.model);
     return this.pipeline;
   }
 

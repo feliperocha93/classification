@@ -24,6 +24,9 @@ const toInlineData = (imgBase64) => {
 };
 
 export async function llmRequest(contents) {
+  if (!process.env.GOOGLE_GENAI_API_KEY) {
+    throw new Error("GOOGLE_GENAI_API_KEY is not set");
+  }
   const response = await genai.models.generateContent({
     model: "gemini-2.0-flash",
     contents: contents,

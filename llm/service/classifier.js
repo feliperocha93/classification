@@ -1,9 +1,36 @@
-import { classify, init } from "./knn/api.js";
+import express from "express";
 
-const example =
-  "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRYsTCZAfCg8v3AWG5JJy68Nge5gIUdaQNl7bZ81RHjOKEqQ2sDGVpCYrAj-aFvjJdMor8MlmPYDXYwwsAvfKa6gw";
+import { classify as KNNClassify, init as KNNinit } from "./knn/api.js";
+import { classify as LLMClassify } from "./llm/api.js";
 
-await init();
-const oi = await classify(example, 5);
+const app = express();
+const port = 3000;
 
-console.log(oi);
+app.use(express.json());
+
+KNNinit();
+
+app.get("/", (req, res) => {
+  res.send("Hello, this is the classifier service!");
+});
+
+app.post("/classify", async (req, res) => {
+  const method = req.body?.method.toLowerCase();
+  const path = req.body?.path;
+  console.log(`Received classification request for method: ${method}`);
+
+  let category;
+  if (method === "llm") {
+    category = await LLMClassify(path);
+  } else if (method === "knn") {
+    category = await KNNClassify(path, 5);
+  } else {
+    return res.send({ error: "Unknown method" });
+  }
+
+  res.send({ result: category });
+});
+
+app.listen(port, () => {
+  console.log(`Classifier service is running at http://localhost:${port}`);
+});
