@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { CaptionedImage } from "./CaptionedImage";
+import { CaptionedImage } from "./components/CaptionedImage";
 import "./App.css";
 
 function App() {
   const [inputValue, setInputValue] = useState("");
+  const [selectValue, setSelectValue] = useState("llm");
   const [imgSrc, setImgSrc] = useState();
   const [method, setMethod] = useState("llm");
 
   function classifyImage() {
     setImgSrc(inputValue);
+    setMethod(selectValue);
   }
 
   return (
@@ -24,8 +26,8 @@ function App() {
         <label htmlFor="method">Method:</label>
         <select
           id="method"
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
+          value={selectValue}
+          onChange={(e) => setSelectValue(e.target.value)}
         >
           <option value="knn">KNN</option>
           <option value="llm">LLM</option>

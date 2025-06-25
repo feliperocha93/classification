@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
+import { classificationRequest } from "../api/classification";
 
 export function CaptionedImage({ src, method }) {
   const [category, setCategory] = useState(null);
 
   useEffect(() => {
-    const getCategory = async () => {
-      const response = await fetch("http://localhost:3000/classify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          method,
-          path: src,
-        }),
-      }).then((res) => res.json());
+    setCategory(null);
 
+    const getCategory = async () => {
+      const response = await classificationRequest(method, src);
       setCategory(response.result);
     };
 
     getCategory();
-  }, [src]);
+  }, [src, method]);
 
   return (
     <div
